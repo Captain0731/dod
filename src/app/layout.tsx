@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Marcellus, Playfair_Display, Poppins, Smooch_Sans } from "next/font/google";
 import "./globals.css";
 import "./globals.scss";
 import Preloader from "@/components/common/Preloader/Preloader";
-
 const marcellus = Marcellus({
   weight: "400",
   variable: "--font-marcellus",
@@ -28,7 +27,24 @@ const smoochSans = Smooch_Sans({
 
 export const metadata: Metadata = {
   title: "Designs Of Dreams",
-  description: "Designs Of Dreams",
+  description: "Premium heritage fashion and artisanal clothing.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "DOD",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FF6A00",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
