@@ -1,0 +1,739 @@
+@use "../../../styles/variables.scss" as *;
+@use "sass:color";
+
+// ── Palette (Strict: Orange, White, Black) ────────────────────────────────────
+$orange: $brand-orange;
+$white: $brand-white;
+$black: $brand-black;
+
+$text-dark: $brand-black;
+$text-mid: #1A1A1A;
+$text-muted: #4D4D4D;
+
+// ── Typography ────────────────────────────────────────────────────────────────
+$font-display: var(--font-playfair), 'Playfair Display', serif;
+$font-body: var(--font-poppins), 'Poppins', sans-serif;
+$font-accent: var(--font-marcellus), 'Marcellus', serif;
+$font-smooch: var(--font-smooch), 'Smooch Sans', sans-serif;
+
+// ── Spacing ───────────────────────────────────────────────────────────────────
+$sp-xs: 4px;
+$sp-sm: 8px;
+$sp-md: 16px;
+$sp-lg: 24px;
+$sp-xl: 40px;
+$sp-2xl: 64px;
+$sp-3xl: 96px;
+
+// ── Easings ───────────────────────────────────────────────────────────────────
+$ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+
+// ── Breakpoints ───────────────────────────────────────────────────────────────
+$bp-xs: 375px;
+$bp-sm: 480px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+$bp-2xl: 1440px;
+$bp-3xl: 1920px;
+
+@mixin bp($size) {
+  @media (max-width: $size) {
+    @content;
+  }
+}
+
+// =============================================================================
+// ROOT
+// =============================================================================
+.hero {
+  position: relative;
+  width: 100%;
+  background-color: $white;
+  overflow: hidden;
+  font-family: $font-body;
+}
+
+// ── Background: Indian Jali / Geometric Textile Pattern ───────────────────────
+.hero__bg-pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55; // Increased opacity for "medium dark" look
+
+  // Authentic interlocking circle pattern matching the reference image
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23FF6A00' stroke-width='0.6' stroke-opacity='0.2'%3E%3Ccircle cx='40' cy='40' r='38'/%3E%3Ccircle cx='0' cy='40' r='38'/%3E%3Ccircle cx='80' cy='40' r='38'/%3E%3Ccircle cx='40' cy='0' r='38'/%3E%3Ccircle cx='40' cy='80' r='38'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 80px 80px;
+}
+
+// ── Background: Grain / Noise Texture ─────────────────────────────────────────
+.hero__bg-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.06;
+
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+}
+
+// ── Background: Warm Glow ─────────────────────────────────────────────────────
+.hero__bg-glow {
+  position: absolute;
+  top: -100px;
+  left: -80px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba($orange, 0.08) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+// =============================================================================
+// CONTAINER — Main Grid
+// =============================================================================
+.hero__container {
+  position: relative;
+  z-index: 2;
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: $sp-3xl $sp-xl $sp-2xl;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: $sp-3xl;
+  min-height: 85vh;
+
+  @include bp($bp-xl) {
+    padding: $sp-2xl $sp-lg;
+    gap: $sp-2xl;
+  }
+
+  @include bp($bp-lg) {
+    grid-template-columns: 1fr;
+    padding: $sp-2xl $sp-xl;
+    gap: $sp-xl;
+    min-height: auto;
+  }
+
+  @include bp($bp-md) {
+    padding: $sp-xl $sp-md;
+    gap: $sp-lg;
+  }
+
+  @include bp($bp-sm) {
+    padding: $sp-lg $sp-sm;
+  }
+}
+
+// =============================================================================
+// LEFT — Content
+// =============================================================================
+.hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: $sp-md;
+  max-width: 580px;
+
+  @include bp($bp-lg) {
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+}
+
+// ── Label / Breadcrumb ────────────────────────────────────────────────────────
+.hero__label {
+  display: flex;
+  align-items: center;
+  gap: $sp-sm;
+  font-family: $font-accent; // Using Marcellus for labels
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: $orange;
+  margin: 0 0 $sp-sm;
+}
+
+.hero__label-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: $orange;
+  flex-shrink: 0;
+}
+
+// ── Headline ──────────────────────────────────────────────────────────────────
+.hero__headline {
+  font-family: $font-display;
+  font-size: clamp(2.2rem, 7vw, 5.2rem);
+  font-weight: 600;
+  line-height: 1.05;
+  color: $text-dark;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.hero__headline-accent {
+  display: inline-block;
+  font-style: italic;
+  font-weight: 700;
+  color: $orange;
+  margin-top: 4px;
+}
+
+// ── Ornament Divider ──────────────────────────────────────────────────────────
+.hero__ornament {
+  color: $orange;
+  opacity: 0.65;
+  margin: $sp-xs 0 $sp-sm;
+}
+
+// ── Subheading ────────────────────────────────────────────────────────────────
+.hero__subheading {
+  font-family: $font-display;
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  font-weight: 500;
+  color: $text-dark;
+  line-height: 1.5;
+  margin: 0;
+}
+
+// ── Description ───────────────────────────────────────────────────────────────
+.hero__description {
+  font-family: $font-body;
+  font-size: 1.05rem;
+  color: $text-muted;
+  line-height: 1.8;
+  margin: 0;
+  max-width: 480px; // Increased max-width for larger text
+}
+
+// ── CTA Buttons ───────────────────────────────────────────────────────────────
+.hero__cta {
+  display: flex;
+  align-items: center;
+  gap: $sp-md;
+  margin-top: $sp-sm;
+  flex-wrap: wrap;
+
+  @include bp($bp-sm) {
+    justify-content: center;
+    gap: $sp-sm;
+    flex-direction: column;
+    width: 100%;
+    
+    .hero__btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+.hero__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: $font-body;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em; // Spaced out for premium look
+  cursor: pointer;
+  border: none;
+  transition: all 0.28s $ease-luxury;
+  text-transform: capitalize;
+
+  // ── Primary: Orange Rounded ──
+  &--primary {
+    padding: 14px 32px;
+    background: $orange;
+    color: $white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba($orange, 0.25);
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      box-shadow: 0 8px 25px rgba($orange, 0.4);
+      transform: translateY(-2px);
+      background: color.scale($orange, $lightness: -5%);
+
+      .hero__btn-arrow {
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  // ── Outline: Ghost ──
+  &--outline {
+    padding: 11px 26px;
+    background: transparent;
+    color: $black;
+    border: 1px solid rgba($black, 0.2);
+    border-radius: 8px;
+
+    &:hover {
+      border-color: rgba($black, 0.4);
+      background: rgba($orange, 0.05);
+      color: $orange;
+    }
+  }
+}
+
+.hero__btn-arrow {
+  position: relative;
+  z-index: 1;
+  font-size: 1.1rem;
+  transition: transform 0.25s $ease-luxury;
+}
+
+.hero__btn-play {
+  display: flex;
+  align-items: center;
+  color: $black;
+}
+
+// =============================================================================
+// RIGHT — Layered Image Cards (Cinematic Gallery)
+// =============================================================================
+.hero__cards {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  max-width: 600px;
+  justify-self: end;
+  margin-right: 40px; // Ensure space for fan-out
+
+  @include bp($bp-lg) {
+    justify-self: center;
+    margin: $sp-xl auto;
+    transform: scale(0.85); // Gracefully scale the entire complex layout down
+    transform-origin: center top;
+  }
+
+  @include bp($bp-md) {
+    height: auto;
+    margin: $sp-lg auto 0;
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+  }
+}
+
+.hero__card {
+  position: absolute;
+  border-radius: 32px;
+  overflow: hidden;
+  cursor: pointer;
+  background: $white;
+  transition: transform 0.6s $ease-luxury, box-shadow 0.6s $ease-luxury;
+
+  @include bp($bp-md) {
+    &:not(.hero__card--model) {
+      display: none !important;
+    }
+  }
+  
+  // Luxury Gallery Shadow
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 30px 60px rgba(0, 0, 0, 0.15);
+  
+  border: 1px solid rgba(#FFFFFF, 0.2);
+  backdrop-filter: blur(8px);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 25px rgba(#FFFFFF, 0.15);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.95) contrast(1.02);
+    transition: transform 1.2s $ease-luxury; // Smooth zoom transition
+  }
+
+  &:hover {
+    z-index: 60 !important;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35);
+    
+    // Card stays still for center model, only moves for others
+    &:not(.hero__card--model) {
+      transform: translateY(-25px) scale(1.03) rotate(0deg) !important;
+    }
+
+    img {
+      transform: scale(1.2); // Enhanced zoom
+    }
+
+    .hero__card-sheen {
+      transform: translateX(100%);
+      opacity: 0.8;
+    }
+
+    .hero__card-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // ── Layering: 4 Behind, 1 Center ──
+  
+  &--embroidery {
+    width: 260px;
+    height: 340px;
+    left: -60px; // Pull inward
+    bottom: 120px;
+    transform: rotate(-18deg);
+    z-index: 1;
+  }
+
+  &--architecture {
+    width: 300px;
+    height: 420px;
+    left: 20px;
+    bottom: 60px;
+    transform: rotate(-10deg);
+    z-index: 3;
+  }
+
+  &--model {
+    width: 380px;
+    height: 540px;
+    left: 0;
+    right: 0;
+    margin: 0 auto; // Use margin auto instead of transform to prevent GSAP conflict
+    bottom: 10px;
+    z-index: 10;
+    border-radius: 42px;
+
+    @include bp($bp-md) {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      transform: none !important;
+      width: 100%;
+      max-width: 420px;
+      height: 60vh;
+      min-height: 400px;
+      max-height: 500px;
+      border-radius: 24px;
+    }
+  }
+
+  &--weaving {
+    width: 290px;
+    height: 410px;
+    right: 20px;
+    bottom: 70px;
+    transform: rotate(8deg);
+    z-index: 3;
+    transition: transform 0.8s $ease-luxury;
+  }
+
+  &--textile {
+    width: 240px;
+    height: 330px;
+    right: -20px;
+    bottom: 110px;
+    transform: rotate(16deg);
+    z-index: 1;
+    transition: transform 0.8s $ease-luxury;
+  }
+}
+
+// ── Refined Fan-Out on Hover ──
+// When the center card is hovered, push the side cards outward
+.hero__cards:has(.hero__card--model:hover) {
+  .hero__card--embroidery { transform: rotate(-28deg) translateX(-80px) !important; }
+  .hero__card--architecture { transform: rotate(-18deg) translateX(-40px) !important; }
+  .hero__card--weaving { transform: rotate(18deg) translateX(40px) !important; }
+  .hero__card--textile { transform: rotate(28deg) translateX(80px) !important; }
+}
+
+.hero__card-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg,
+    transparent 20%,
+    rgba(#FFFFFF, 0.3) 45%,
+    rgba(#FFFFFF, 0.45) 50%,
+    rgba(#FFFFFF, 0.3) 55%,
+    transparent 80%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.9s ease;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.3;
+
+  .hero__card:hover & {
+    transform: translateX(100%);
+  }
+}
+
+// Museum Label
+.hero__card-label {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  background: rgba(#FFFFFF, 0.85);
+  backdrop-filter: blur(15px);
+  padding: 10px 18px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 6;
+  border-left: 4px solid $orange;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.6s $ease-luxury;
+}
+
+.hero__card-label-id {
+  font-family: $font-body;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: $text-muted;
+}
+
+.hero__card-label-name {
+  font-family: $font-display;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $text-dark;
+}
+
+// =============================================================================
+// FEATURE STRIP
+// =============================================================================
+.hero__features-container {
+  position: relative;
+  z-index: 2;
+  background: transparent; // Removed background to match hero bg
+}
+
+.hero__features {
+  max-width: 100%; // Spans full width to fit everything
+  padding: $sp-xl 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap; // Forced single line
+  gap: $sp-md;
+
+  @include bp($bp-lg) {
+    overflow-x: auto; // Allow scrolling on mobile instead of wrapping
+    justify-content: flex-start;
+    padding: $sp-xl 20px; // Reduce padding to allow more content to peek
+    padding-bottom: $sp-sm; // Add padding to prevent clipping
+    
+    // Add scroll snapping for a premium carousel feel
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 20px;
+    
+    // Hide scrollbar for a cleaner look
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.hero__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: $sp-md;
+  padding: 0 12px; // Minimal padding to fit all on one line
+  flex: 1; // Evenly distribute space
+  min-width: 220px;
+  max-width: 340px;
+
+  @include bp($bp-lg) {
+    flex: 0 0 calc(85vw - 40px); // Ensure the next card peeks into view
+    max-width: none;
+    scroll-snap-align: start;
+  }
+  
+  @include bp($bp-sm) {
+    flex: 0 0 calc(92vw - 40px); // Takes up most of the screen but still peeks
+  }
+
+  &:hover {
+    .hero__feature-icon {
+      color: $orange;
+      transform: scale(1.1);
+    }
+
+    .hero__feature-title {
+      color: $orange;
+    }
+  }
+}
+
+.hero__feature-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba($black, 0.12);
+  align-self: center;
+
+  @include bp($bp-lg) {
+    display: none;
+  }
+}
+
+.hero__feature-icon {
+  width: 44px;
+  height: 44px;
+  color: $orange;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-top: 4px; // Slight offset to align with the first line of text
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.hero__feature-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hero__feature-title {
+  font-family: $font-accent;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-weight: 500;
+  color: $text-dark;
+  line-height: 1.3;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.hero__feature-desc {
+  font-family: $font-body;
+  font-size: 0.88rem;
+  color: $text-muted;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 240px; // Increased width to prevent aggressive wrapping
+}
+
+// =============================================================================
+// QUOTE BAND — Dark Cinematic Footer Strip
+// =============================================================================
+.hero__quote-band {
+  position: relative;
+  z-index: 2;
+  background: $black;
+  overflow: hidden;
+
+  // Warm heritage gradient overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        rgba($orange, 0.15) 0%,
+        transparent 30%,
+        transparent 70%,
+        rgba($orange, 0.15) 100%);
+    pointer-events: none;
+  }
+
+  // Top accent line
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba($orange, 0.5) 30%,
+        rgba($orange, 0.6) 50%,
+        rgba($orange, 0.5) 70%,
+        transparent);
+    pointer-events: none;
+  }
+}
+
+.hero__quote-inner {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: $sp-xl;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $sp-xl;
+
+  @include bp($bp-md) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.hero__quote {
+  font-family: $font-display;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(#FFFFFF, 0.75);
+  line-height: 1.75;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+// ── Brand Signature ───────────────────────────────────────────────────────────
+.hero__brand-sig {
+  display: flex;
+  align-items: center;
+  gap: $sp-md;
+  flex-shrink: 0;
+}
+
+.hero__brand-emblem {
+  color: rgba($orange, 0.7);
+
+  svg {
+    display: block;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.hero__brand-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  // color: white;
+
+  span {
+    font-family: $font-body;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba($white, 1.35);
+    white-space: nowrap;
+  }
+}
