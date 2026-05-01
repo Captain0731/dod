@@ -98,7 +98,9 @@ const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [taglineIndex, setTaglineIndex] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+  const [isMegaOpen, setIsMegaOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<keyof typeof megaMenuData>("Kurti");
+
   // Drill-down State: ['main', 'Collection', 'Kurti', 'Kurti Categories']
   const [viewStack, setViewStack] = useState<any[]>(['main']);
   const currentView = viewStack[viewStack.length - 1];
@@ -163,9 +165,71 @@ const Navbar: React.FC = () => {
             <ul className="navbar-nav__list">
               <li className="navbar-nav__item"><Link href="/" className="navbar-nav__link">Home</Link></li>
               <li className="navbar-nav__item"><Link href="/about" className="navbar-nav__link">About</Link></li>
-              <li className="navbar-nav__item has-mega">
-                <Link href="/collection" className="navbar-nav__link">Collection <ChevronRight size={14} style={{transform: 'rotate(90deg)'}} /></Link>
-                {/* Mega Menu logic here (reuse previous logic if needed, but keeping it clean for now) */}
+              {/* MEGA MENU ITEM */}
+              <li 
+                className="navbar-nav__item has-mega"
+                onMouseEnter={() => setIsMegaOpen(true)}
+                onMouseLeave={() => setIsMegaOpen(false)}
+              >
+                <div 
+                  className="navbar-nav__link" 
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setIsMegaOpen(!isMegaOpen)}
+                >
+                  Collection <ChevronRight size={14} style={{transform: isMegaOpen ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 0.3s'}} />
+                </div>
+                
+                <AnimatePresence>
+                  {isMegaOpen && (
+                    <motion.div 
+                      className="mega-menu"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <div className="mega-menu__container" onClick={(e) => e.stopPropagation()}>
+                        {/* Sidebar Tabs */}
+                        <div className="mega-menu__sidebar">
+                          {Object.keys(megaMenuData).map((key) => (
+                            <button
+                              key={key}
+                              className={`mega-menu__tab ${activeTab === key ? "is-active" : ""}`}
+                              onMouseEnter={() => setActiveTab(key as any)}
+                            >
+                              {key}
+                              <ChevronRight size={16} />
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Content Grid */}
+                        <div className="mega-menu__content">
+                          <div className="mega-menu__grid">
+                            {megaMenuData[activeTab].sections.map((section: any) => (
+                              <div key={section.id} className="mega-menu__column">
+                                <div className="mega-menu__icon-circle">
+                                  <Layers size={24} />
+                                </div>
+                                <h4 className="mega-menu__column-title">{section.title}</h4>
+                                <ul className="mega-menu__links">
+                                  {section.links.map((link: string) => (
+                                    <li key={link}>
+                                      <Link href="#" className="mega-menu__link">{link}</Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <Link href="#" className="mega-menu__view-all">
+                                  {section.viewAll} <ChevronRight size={14} />
+                                </Link>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </li>
               <li className="navbar-nav__item"><Link href="/contact" className="navbar-nav__link">Contact</Link></li>
             </ul>
@@ -196,13 +260,13 @@ const Navbar: React.FC = () => {
           <>
             <motion.div className="mobile-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeMenu} />
             <motion.div className="mobile-drawer" initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}>
-              
+
               {/* HEADER (DYNAMIC) */}
               <div className={`mobile-drawer__header ${currentView === 'main' ? 'is-black' : ''}`}>
                 {currentView !== 'main' && (
                   <button className="mobile-drawer__back" onClick={popView}><ChevronLeft size={24} /></button>
                 )}
-                
+
                 {currentView === 'main' ? (
                   <div className="mobile-drawer__brand">
                     <img src="/logo-emblem.png" alt="Logo" className="mobile-drawer__logo" />
@@ -215,7 +279,7 @@ const Navbar: React.FC = () => {
                 ) : (
                   <span className="mobile-drawer__title">{typeof currentView === 'string' ? currentView : currentView.title}</span>
                 )}
-                
+
                 <button className="mobile-drawer__close" onClick={closeMenu}><X size={24} /></button>
               </div>
 
