@@ -1,22 +1,7 @@
 @use "../../../styles/variables.scss" as *;
 @use "sass:color";
 
-// ── Palette (Strict: Orange, White, Black) ────────────────────────────────────
-$orange: $brand-orange;
-$white: $brand-white;
-$black: $brand-black;
-
-$text-dark: $brand-black;
-$text-mid: #1A1A1A;
-$text-muted: #4D4D4D;
-
-// ── Typography ────────────────────────────────────────────────────────────────
-$font-display: var(--font-playfair), 'Playfair Display', serif;
-$font-body: var(--font-poppins), 'Poppins', sans-serif;
-$font-accent: var(--font-marcellus), 'Marcellus', serif;
-$font-smooch: var(--font-smooch), 'Smooch Sans', sans-serif;
-
-// ── Spacing ───────────────────────────────────────────────────────────────────
+// ── Spacing Variables ────────────────────────────────────────────────────────
 $sp-xs: 4px;
 $sp-sm: 8px;
 $sp-md: 16px;
@@ -25,584 +10,405 @@ $sp-xl: 40px;
 $sp-2xl: 64px;
 $sp-3xl: 96px;
 
-// ── Easings ───────────────────────────────────────────────────────────────────
-$ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+// ── Typography ────────────────────────────────────────────────────────────────
+$font-display: var(--font-playfair), 'Playfair Display', serif;
+$font-body: var(--font-poppins), 'Poppins', sans-serif;
+$font-accent: var(--font-marcellus), 'Marcellus', serif;
 
-// ── Breakpoints ───────────────────────────────────────────────────────────────
-$bp-xs: 375px;
-$bp-sm: 480px;
-$bp-md: 768px;
-$bp-lg: 1024px;
-$bp-xl: 1280px;
-$bp-2xl: 1440px;
-$bp-3xl: 1920px;
-
-@mixin bp($size) {
-  @media (max-width: $size) {
-    @content;
-  }
-}
-
-// =============================================================================
-// ROOT
-// =============================================================================
+// ── Hero Section Layout ──────────────────────────────────────────────────────
 .hero {
   position: relative;
   width: 100%;
-  background-color: $white;
-  overflow: hidden;
-  font-family: $font-body;
-}
-
-// ── Background: Indian Jali / Geometric Textile Pattern ───────────────────────
-.hero__bg-pattern {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.55; // Increased opacity for "medium dark" look
-
-  // Authentic interlocking circle pattern matching the reference image
-  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23FF6A00' stroke-width='0.6' stroke-opacity='0.2'%3E%3Ccircle cx='40' cy='40' r='38'/%3E%3Ccircle cx='0' cy='40' r='38'/%3E%3Ccircle cx='80' cy='40' r='38'/%3E%3Ccircle cx='40' cy='0' r='38'/%3E%3Ccircle cx='40' cy='80' r='38'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 80px 80px;
-}
-
-// ── Background: Grain / Noise Texture ─────────────────────────────────────────
-.hero__bg-grain {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.06;
-
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
-}
-
-// ── Background: Warm Glow ─────────────────────────────────────────────────────
-.hero__bg-glow {
-  position: absolute;
-  top: -100px;
-  left: -80px;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba($orange, 0.08) 0%, transparent 65%);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-// =============================================================================
-// CONTAINER — Main Grid
-// =============================================================================
-.hero__container {
-  position: relative;
-  z-index: 2;
-  max-width: 1340px;
-  margin: 0 auto;
-  padding: $sp-3xl $sp-xl $sp-2xl;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: $sp-3xl;
-  min-height: 85vh;
-
-  @include bp($bp-xl) {
-    padding: $sp-2xl $sp-lg;
-    gap: $sp-2xl;
-  }
-
-  @include bp($bp-lg) {
-    grid-template-columns: 1fr;
-    padding: $sp-2xl $sp-xl;
-    gap: $sp-xl;
-    min-height: auto;
-  }
-
-  @include bp($bp-md) {
-    padding: $sp-xl $sp-md;
-    gap: $sp-lg;
-  }
-
-  @include bp($bp-sm) {
-    padding: $sp-lg $sp-sm;
-  }
-}
-
-// =============================================================================
-// LEFT — Content
-// =============================================================================
-.hero__content {
+  min-height: 100vh;
+  background-color: $brand-white;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: $sp-md;
-  max-width: 580px;
 
-  @include bp($bp-lg) {
-    max-width: 100%;
-    text-align: center;
-    align-items: center;
-  }
+  // Hardware Acceleration
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
-// ── Label / Breadcrumb ────────────────────────────────────────────────────────
-.hero__label {
-  display: flex;
-  align-items: center;
-  gap: $sp-sm;
-  font-family: $font-accent; // Using Marcellus for labels
-  font-size: 0.8rem;
-  font-weight: 400;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: $orange;
-  margin: 0 0 $sp-sm;
-}
-
-.hero__label-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: $orange;
-  flex-shrink: 0;
-}
-
-// ── Headline ──────────────────────────────────────────────────────────────────
-.hero__headline {
-  font-family: $font-display;
-  font-size: clamp(2.2rem, 7vw, 5.2rem);
-  font-weight: 600;
-  line-height: 1.05;
-  color: $text-dark;
-  letter-spacing: -0.02em;
-  margin: 0;
-}
-
-.hero__headline-accent {
-  display: inline-block;
-  font-style: italic;
-  font-weight: 700;
-  color: $orange;
-  margin-top: 4px;
-}
-
-// ── Ornament Divider ──────────────────────────────────────────────────────────
-.hero__ornament {
-  color: $orange;
-  opacity: 0.65;
-  margin: $sp-xs 0 $sp-sm;
-}
-
-// ── Subheading ────────────────────────────────────────────────────────────────
-.hero__subheading {
-  font-family: $font-display;
-  font-size: clamp(1.1rem, 3vw, 1.6rem);
-  font-weight: 500;
-  color: $text-dark;
-  line-height: 1.5;
-  margin: 0;
-}
-
-// ── Description ───────────────────────────────────────────────────────────────
-.hero__description {
-  font-family: $font-body;
-  font-size: 1.05rem;
-  color: $text-muted;
-  line-height: 1.8;
-  margin: 0;
-  max-width: 480px; // Increased max-width for larger text
-}
-
-// ── CTA Buttons ───────────────────────────────────────────────────────────────
-.hero__cta {
-  display: flex;
-  align-items: center;
-  gap: $sp-md;
-  margin-top: $sp-sm;
-  flex-wrap: wrap;
-
-  @include bp($bp-sm) {
-    justify-content: center;
-    gap: $sp-sm;
-    flex-direction: column;
-    width: 100%;
-    
-    .hero__btn {
-      width: 100%;
-      justify-content: center;
-    }
-  }
-}
-
-.hero__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: $font-body;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.05em; // Spaced out for premium look
-  cursor: pointer;
-  border: none;
-  transition: all 0.28s $ease-luxury;
-  text-transform: capitalize;
-
-  // ── Primary: Orange Rounded ──
-  &--primary {
-    padding: 14px 32px;
-    background: $orange;
-    color: $white;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba($orange, 0.25);
-    position: relative;
-    overflow: hidden;
-
-    &:hover {
-      box-shadow: 0 8px 25px rgba($orange, 0.4);
-      transform: translateY(-2px);
-      background: color.scale($orange, $lightness: -5%);
-
-      .hero__btn-arrow {
-        transform: translateX(4px);
-      }
-    }
-  }
-
-  // ── Outline: Ghost ──
-  &--outline {
-    padding: 11px 26px;
-    background: transparent;
-    color: $black;
-    border: 1px solid rgba($black, 0.2);
-    border-radius: 8px;
-
-    &:hover {
-      border-color: rgba($black, 0.4);
-      background: rgba($orange, 0.05);
-      color: $orange;
-    }
-  }
-}
-
-.hero__btn-arrow {
+// ── Swiper Slider ───────────────────────────────────────────────────────────
+.hero__swiper {
+  width: 100%;
+  height: 83vh; // Slider stays fullscreen
   position: relative;
-  z-index: 1;
-  font-size: 1.1rem;
-  transition: transform 0.25s $ease-luxury;
 }
 
-.hero__btn-play {
-  display: flex;
-  align-items: center;
-  color: $black;
-}
-
-// =============================================================================
-// RIGHT — Layered Image Cards (Cinematic Gallery)
-// =============================================================================
-.hero__cards {
+.hero__slide {
   position: relative;
   width: 100%;
-  height: 600px;
-  max-width: 600px;
-  justify-self: end;
-  margin-right: 40px; // Ensure space for fan-out
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 
-  @include bp($bp-lg) {
-    justify-self: center;
-    margin: $sp-xl auto;
-    transform: scale(0.85); // Gracefully scale the entire complex layout down
-    transform-origin: center top;
-  }
-
-  @include bp($bp-md) {
-    height: auto;
-    margin: $sp-lg auto 0;
-    display: flex;
-    justify-content: center;
-    max-width: 100%;
-  }
+  // GPU Optimization
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
-.hero__card {
+.hero__image-wrapper {
   position: absolute;
-  border-radius: 32px;
+  inset: 0;
+  z-index: 1;
   overflow: hidden;
-  cursor: pointer;
-  background: $white;
-  transition: transform 0.6s $ease-luxury, box-shadow 0.6s $ease-luxury;
-
-  @include bp($bp-md) {
-    &:not(.hero__card--model) {
-      display: none !important;
-    }
-  }
-  
-  // Luxury Gallery Shadow
-  box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.1),
-    0 30px 60px rgba(0, 0, 0, 0.15);
-  
-  border: 1px solid rgba(#FFFFFF, 0.2);
-  backdrop-filter: blur(8px);
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow: inset 0 0 25px rgba(#FFFFFF, 0.15);
-    pointer-events: none;
-    z-index: 2;
-  }
+  pointer-events: none; // Prevent image from stealing clicks
+  user-select: none;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
-    filter: saturate(0.95) contrast(1.02);
-    transition: transform 1.2s $ease-luxury; // Smooth zoom transition
-  }
+    transform: scale(1.1);
+    transition: transform 6s cubic-bezier(0.16, 1, 0.3, 1);
 
-  &:hover {
-    z-index: 60 !important;
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35);
-    
-    // Card stays still for center model, only moves for others
-    &:not(.hero__card--model) {
-      transform: translateY(-25px) scale(1.03) rotate(0deg) !important;
-    }
-
-    img {
-      transform: scale(1.2); // Enhanced zoom
-    }
-
-    .hero__card-sheen {
-      transform: translateX(100%);
-      opacity: 0.8;
-    }
-
-    .hero__card-label {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  // ── Layering: 4 Behind, 1 Center ──
-  
-  &--embroidery {
-    width: 260px;
-    height: 340px;
-    left: -60px; // Pull inward
-    bottom: 120px;
-    transform: rotate(-18deg);
-    z-index: 1;
-  }
-
-  &--architecture {
-    width: 300px;
-    height: 420px;
-    left: 20px;
-    bottom: 60px;
-    transform: rotate(-10deg);
-    z-index: 3;
-  }
-
-  &--model {
-    width: 380px;
-    height: 540px;
-    left: 0;
-    right: 0;
-    margin: 0 auto; // Use margin auto instead of transform to prevent GSAP conflict
-    bottom: 10px;
-    z-index: 10;
-    border-radius: 42px;
-
-    @include bp($bp-md) {
-      position: relative;
-      left: auto;
-      bottom: auto;
-      transform: none !important;
-      width: 100%;
-      max-width: 420px;
-      height: 60vh;
-      min-height: 400px;
-      max-height: 500px;
-      border-radius: 24px;
-    }
-  }
-
-  &--weaving {
-    width: 290px;
-    height: 410px;
-    right: 20px;
-    bottom: 70px;
-    transform: rotate(8deg);
-    z-index: 3;
-    transition: transform 0.8s $ease-luxury;
-  }
-
-  &--textile {
-    width: 240px;
-    height: 330px;
-    right: -20px;
-    bottom: 110px;
-    transform: rotate(16deg);
-    z-index: 1;
-    transition: transform 0.8s $ease-luxury;
+    // Hardware Acceleration
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 }
 
-// ── Refined Fan-Out on Hover ──
-// When the center card is hovered, push the side cards outward
-.hero__cards:has(.hero__card--model:hover) {
-  .hero__card--embroidery { transform: rotate(-28deg) translateX(-80px) !important; }
-  .hero__card--architecture { transform: rotate(-18deg) translateX(-40px) !important; }
-  .hero__card--weaving { transform: rotate(18deg) translateX(40px) !important; }
-  .hero__card--textile { transform: rotate(28deg) translateX(80px) !important; }
-}
-
-.hero__card-sheen {
+.hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg,
-    transparent 20%,
-    rgba(#FFFFFF, 0.3) 45%,
-    rgba(#FFFFFF, 0.45) 50%,
-    rgba(#FFFFFF, 0.3) 55%,
-    transparent 80%
-  );
-  transform: translateX(-100%);
-  transition: transform 0.9s ease;
+  z-index: 2;
+  background: radial-gradient(circle at center, rgba($brand-black, 0.4) 0%, rgba($brand-black, 0.7) 100%);
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
   pointer-events: none;
-  z-index: 5;
-  opacity: 0.3;
+}
 
-  .hero__card:hover & {
-    transform: translateX(100%);
+// ── Content Layer ────────────────────────────────────────────────────────────
+.hero__content {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  padding: 160px 40px 60px; // Increased top padding to clear navbar
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: $brand-white;
+
+  @media (max-width: 580px) {
+    padding: 140px 20px 40px; // More space for buttons on mobile
+  }
+
+  // GPU Optimization for floating
+  will-change: transform;
+  transform: translateZ(0);
+
+  // Prevent children from causing jitter during animations
+  * {
+    backface-visibility: hidden;
+  }
+
+  @media (max-width: 1024px) {
+    padding-top: 130px;
   }
 }
 
-// Museum Label
-.hero__card-label {
-  position: absolute;
-  bottom: 30px;
-  left: 30px;
-  background: rgba(#FFFFFF, 0.85);
-  backdrop-filter: blur(15px);
-  padding: 10px 18px;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  z-index: 6;
-  border-left: 4px solid $orange;
-  opacity: 0;
-  transform: translateY(15px);
-  transition: all 0.6s $ease-luxury;
-}
-
-.hero__card-label-id {
-  font-family: $font-body;
-  font-size: 0.6rem;
-  font-weight: 700;
-  color: $text-muted;
-}
-
-.hero__card-label-name {
-  font-family: $font-display;
-  font-size: 0.85rem;
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: rgba($brand-white, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba($brand-white, 0.2);
+  border-radius: 100px;
+  font-family: var(--font-poppins);
+  font-size: 0.75rem;
   font-weight: 600;
-  color: $text-dark;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $brand-orange;
+  margin-bottom: $sp-lg;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.hero__heading {
+  font-family: var(--font-playfair);
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 $sp-md;
+  color: $brand-white;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+  span {
+    color: $brand-orange;
+    display: inline-block;
+  }
+}
+
+.hero__description {
+  font-family: var(--font-poppins);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 0 $sp-xl;
+  color: rgba($brand-white, 0.9);
+  opacity: 0.9;
+}
+
+// ── Buttons ──────────────────────────────────────────────────────────────────
+.hero__actions {
+  display: flex;
+  gap: $sp-md;
+  align-items: center;
+
+  @media (max-width: 580px) {
+    flex-direction: row;
+    flex-wrap: nowrap; // Force one line
+    justify-content: center;
+    width: 100%;
+    gap: 8px; // Smaller gap
+
+    .hero__btn {
+      padding: 12px 15px; // More compact
+      font-size: 0.85rem; // Slightly smaller text
+      flex: 1;
+      min-width: 0; // Remove min-width to prevent stacking
+      white-space: nowrap; // Prevent text from wrapping inside button
+    }
+  }
+}
+
+.hero__btn {
+  padding: 18px 40px;
+  border-radius: 12px;
+  font-family: var(--font-poppins);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s $ease-luxury;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+
+  &--primary {
+    background: $brand-orange;
+    color: $brand-white;
+    border: none;
+    box-shadow: 0 10px 20px rgba($brand-orange, 0.3);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba($brand-white, 0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    &:hover {
+      background: color.scale($brand-orange, $lightness: 5%);
+      box-shadow: 0 15px 30px rgba($brand-orange, 0.5);
+      transform: translateY(-3px);
+
+      &::before {
+        transform: translateX(100%);
+      }
+    }
+  }
+
+  &--secondary {
+    background: rgba($brand-white, 0.1);
+    color: $brand-white;
+    border: 1px solid rgba($brand-white, 0.3);
+    backdrop-filter: blur(10px);
+
+    &:hover {
+      background: rgba($brand-white, 0.2);
+      border-color: $brand-white;
+      transform: translateY(-3px);
+    }
+  }
+}
+
+// ── Swiper Navigation & Pagination ───────────────────────────────────────────
+.hero__nav-btn {
+  position: absolute;
+  bottom: 60px;
+  top: auto;
+  z-index: 20;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba($brand-white, 0.1);
+  border: 1px solid rgba($brand-white, 0.2);
+  backdrop-filter: blur(10px);
+  color: $brand-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: $brand-orange;
+    border-color: $brand-orange;
+    transform: scale(1.1);
+  }
+
+  &--prev {
+    right: 100px;
+    left: auto;
+  }
+
+  &--next {
+    right: 40px;
+  }
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+}
+
+.hero__pagination {
+  position: absolute;
+  bottom: $sp-xl;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 12px;
+
+  .swiper-pagination-bullet {
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba($brand-white, 0.3);
+    opacity: 1;
+    transition: all 0.4s ease;
+    cursor: pointer;
+
+    &-active {
+      background: $brand-orange;
+      width: 60px;
+    }
+  }
+}
+
+// ── Animations ───────────────────────────────────────────────────────────────
+.swiper-slide-active {
+  .hero__image-wrapper img {
+    transform: scale(1);
+  }
+}
+
+// Floating effect for background elements (subtle)
+.hero__float {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba($brand-orange, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 5;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 // =============================================================================
-// FEATURE STRIP
+// FEATURE STRIP (Restored)
 // =============================================================================
 .hero__features-container {
   position: relative;
   z-index: 2;
-  background: transparent; // Removed background to match hero bg
+  background: $brand-white;
+  overflow: hidden;
+
+  // Heritage Jali Pattern for Feature Strip (Light Orange)
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.12;
+    z-index: -1;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23FF6A00' stroke-width='0.6'%3E%3Ccircle cx='40' cy='40' r='38'/%3E%3Ccircle cx='0' cy='40' r='38'/%3E%3Ccircle cx='80' cy='40' r='38'/%3E%3Ccircle cx='40' cy='0' r='38'/%3E%3Ccircle cx='40' cy='80' r='38'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
 }
 
 .hero__features {
-  max-width: 100%; // Spans full width to fit everything
-  padding: $sp-xl 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $sp-xl $sp-lg;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: nowrap; // Forced single line
   gap: $sp-md;
 
-  @include bp($bp-lg) {
-    overflow-x: auto; // Allow scrolling on mobile instead of wrapping
-    justify-content: flex-start;
-    padding: $sp-xl 20px; // Reduce padding to allow more content to peek
-    padding-bottom: $sp-sm; // Add padding to prevent clipping
-    
-    // Add scroll snapping for a premium carousel feel
-    scroll-snap-type: x mandatory;
-    scroll-padding-left: 20px;
-    
-    // Hide scrollbar for a cleaner look
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  @media (max-width: 1200px) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: $sp-xl;
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
 .hero__feature {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: $sp-md;
-  padding: 0 12px; // Minimal padding to fit all on one line
-  flex: 1; // Evenly distribute space
-  min-width: 220px;
-  max-width: 340px;
+  flex: 1;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
-  @include bp($bp-lg) {
-    flex: 0 0 calc(85vw - 40px); // Ensure the next card peeks into view
-    max-width: none;
-    scroll-snap-align: start;
-  }
-  
-  @include bp($bp-sm) {
-    flex: 0 0 calc(92vw - 40px); // Takes up most of the screen but still peeks
+  &--highlight {
+    .hero__feature-title {
+      color: $brand-orange !important;
+    }
   }
 
   &:hover {
     .hero__feature-icon {
-      color: $orange;
-      transform: scale(1.1);
+      color: $brand-orange;
+      transform: scale(1.1) translateY(-2px);
     }
 
     .hero__feature-title {
-      color: $orange;
+      color: $brand-orange;
     }
   }
 }
 
 .hero__feature-divider {
   width: 1px;
-  height: 40px;
-  background: rgba($black, 0.12);
-  align-self: center;
+  height: 60px;
+  background: rgba($brand-black, 0.08);
+  margin: 0 $sp-sm;
 
-  @include bp($bp-lg) {
+  @media (max-width: 1200px) {
     display: none;
   }
 }
 
 .hero__feature-icon {
-  width: 44px;
-  height: 44px;
-  color: $orange;
+  width: 40px;
+  height: 40px;
+  color: $brand-orange;
   transition: all 0.3s ease;
   flex-shrink: 0;
-  margin-top: 4px; // Slight offset to align with the first line of text
 
   svg {
     display: block;
@@ -619,73 +425,49 @@ $bp-3xl: 1920px;
 
 .hero__feature-title {
   font-family: $font-accent;
-  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-size: 1.1rem;
   font-weight: 500;
-  color: $text-dark;
-  line-height: 1.3;
+  color: $brand-black;
   margin: 0;
-  transition: color 0.3s ease;
+  white-space: nowrap;
 }
 
 .hero__feature-desc {
   font-family: $font-body;
-  font-size: 0.88rem;
-  color: $text-muted;
-  line-height: 1.5;
+  font-size: 0.85rem;
+  color: rgba($brand-black, 0.6);
   margin: 0;
-  max-width: 240px; // Increased width to prevent aggressive wrapping
 }
 
 // =============================================================================
-// QUOTE BAND — Dark Cinematic Footer Strip
+// QUOTE BAND (Restored)
 // =============================================================================
 .hero__quote-band {
   position: relative;
   z-index: 2;
-  background: $black;
+  background: $brand-black;
+  color: $brand-white;
+  padding: $sp-2xl 0;
   overflow: hidden;
 
-  // Warm heritage gradient overlay
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg,
-        rgba($orange, 0.15) 0%,
-        transparent 30%,
-        transparent 70%,
-        rgba($orange, 0.15) 100%);
-    pointer-events: none;
-  }
-
-  // Top accent line
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg,
-        transparent,
-        rgba($orange, 0.5) 30%,
-        rgba($orange, 0.6) 50%,
-        rgba($orange, 0.5) 70%,
-        transparent);
-    pointer-events: none;
+    background: linear-gradient(90deg, rgba($brand-orange, 0.1) 0%, transparent 50%, rgba($brand-orange, 0.1) 100%);
   }
 }
 
 .hero__quote-inner {
   max-width: 1340px;
   margin: 0 auto;
-  padding: $sp-xl;
+  padding: 0 $sp-xl;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: $sp-xl;
+  gap: $sp-2xl;
 
-  @include bp($bp-md) {
+  @media (max-width: 768px) {
     flex-direction: column;
     text-align: center;
   }
@@ -693,39 +475,32 @@ $bp-3xl: 1920px;
 
 .hero__quote {
   font-family: $font-display;
-  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
-  font-weight: 400;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
   font-style: italic;
-  color: rgba(#FFFFFF, 0.75);
-  line-height: 1.75;
+  line-height: 1.8;
   margin: 0;
-  padding: 0;
-  border: none;
+  color: rgba($brand-white, 0.85);
 }
 
-// ── Brand Signature ───────────────────────────────────────────────────────────
 .hero__brand-sig {
   display: flex;
   align-items: center;
   gap: $sp-md;
-  flex-shrink: 0;
 }
 
 .hero__brand-emblem {
-  color: rgba($orange, 0.7);
+  color: $brand-orange;
 
   svg {
-    display: block;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
   }
 }
 
 .hero__brand-lines {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  // color: white;
+  gap: 2px;
 
   span {
     font-family: $font-body;
@@ -733,7 +508,7 @@ $bp-3xl: 1920px;
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: rgba($white, 1.35);
+    color: $brand-white;
     white-space: nowrap;
   }
 }

@@ -3,6 +3,8 @@ import { Marcellus, Playfair_Display, Poppins, Smooch_Sans } from "next/font/goo
 import "./globals.css";
 import "./globals.scss";
 import Preloader from "@/components/common/Preloader/Preloader";
+import Navbar from "@/components/common/Navbar/Navbar";
+
 const marcellus = Marcellus({
   weight: "400",
   variable: "--font-marcellus",
@@ -59,6 +61,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col relative" suppressHydrationWarning>
         <Preloader />
+        <Navbar />
         {children}
       </body>
     </html>

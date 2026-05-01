@@ -1,92 +1,318 @@
-// src/components/common/Navbar.tsx
-
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Search,
+  User,
+  Heart,
+  ShoppingBag,
+  ChevronRight,
+  ChevronLeft,
+  Mail,
+  Phone,
+  X,
+  Menu,
+  Home,
+  Info,
+  Layers,
+  PhoneCall,
+  LogIn,
+  Gift,
+} from "lucide-react";
 import "./Navbar.scss";
 
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaLinkedinIn,
-} from "react-icons/fa";
+// ── DATA STRUCTURE ───────────────────────────────────────────────────────────
+const taglines = [
+  "Elegant Ethnic Wear for Every You",
+  "Free Shipping on All Orders Above ₹1999",
+  "Handcrafted with Love in India",
+  "New Festive Collection Out Now!"
+];
 
-import {
-  MdEmail,
-  MdPhone,
-} from "react-icons/md";
+const mobileNavLinks = [
+  { name: "Home", href: "/", icon: <Home size={20} /> },
+  { name: "About Us", href: "/about", icon: <Info size={20} /> },
+  { name: "Collection", href: "/collection", icon: <Layers size={20} />, hasDrillDown: true },
+  { name: "Contact Us", href: "/contact", icon: <PhoneCall size={20} /> },
+  { name: "Search", href: "#", icon: <Search size={20} /> },
+  { name: "Cart", href: "/cart", icon: <ShoppingBag size={20} />, count: 0 },
+  { name: "Wishlist", href: "/wishlist", icon: <Heart size={20} />, count: 0 },
+  { name: "Login / Register", href: "/login", icon: <User size={20} /> },
+];
 
-export default function Navbar() {
+const megaMenuData: any = {
+  Kurti: {
+    title: "Kurti",
+    image: "/mobile/kurti.jpg",
+    description: "Stylish Kurtis for Every Occasion",
+    sections: [
+      {
+        id: "categories",
+        title: "Kurti Categories",
+        links: ["Anarkali Kurti", "A-Line Kurti", "Straight Kurti", "Short Kurti", "Long Kurti", "Party Wear Kurti", "Printed Kurti", "Embroidered Kurti"],
+        viewAll: "View All Kurtis"
+      },
+      {
+        id: "fabrics",
+        title: "Kurti Fabrics",
+        links: ["Cotton", "Rayon", "Silk", "Georgette", "Chiffon", "Linen", "Khadi", "Crepe"],
+        viewAll: "View All Fabrics"
+      },
+      {
+        id: "designs",
+        title: "Kurti Designs",
+        links: ["Embroidered", "Printed", "Plain", "Floral", "Mirror Work", "Aari Work", "Handwork", "Block Print"],
+        viewAll: "View All Designs"
+      }
+    ]
+  },
+  Saree: {
+    title: "Saree",
+    image: "/mobile/saree.jpg",
+    description: "Elegant Sarees for Every You",
+    sections: [
+      { id: "types", title: "Saree Types", links: ["Banarasi", "Silk", "Chiffon", "Net", "Cotton"], viewAll: "View All" }
+    ]
+  },
+  Blouse: {
+    title: "Blouse",
+    image: "/mobile/blouse.jpg",
+    description: "Trendy Blouses in Latest Designs",
+    sections: [
+      { id: "styles", title: "Blouse Styles", links: ["Ready Made", "Custom", "Designer"], viewAll: "View All" }
+    ]
+  },
+  Dupatta: {
+    title: "Dupatta",
+    image: "/mobile/dupatta.jpg",
+    description: "Beautiful Dupattas to Complete Your Look",
+    sections: [
+      { id: "styles", title: "Styles", links: ["Heavy", "Light", "Floral"], viewAll: "View All" }
+    ]
+  }
+};
+
+const Navbar: React.FC = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [taglineIndex, setTaglineIndex] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Drill-down State: ['main', 'Collection', 'Kurti', 'Kurti Categories']
+  const [viewStack, setViewStack] = useState<any[]>(['main']);
+  const currentView = viewStack[viewStack.length - 1];
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    const interval = setInterval(() => setTaglineIndex((p) => (p + 1) % taglines.length), 4000);
+    return () => { window.removeEventListener("scroll", handleScroll); clearInterval(interval); };
+  }, []);
+
+  const pushView = (view: any) => setViewStack([...viewStack, view]);
+  const popView = () => setViewStack(viewStack.slice(0, -1));
+  const closeMenu = () => { setIsMobileMenuOpen(false); setViewStack(['main']); };
+
   return (
-    <header className="navbar">
-      
-      {/* TOP BAR */}
-      <div className="topbar">
-        <div className="left">
-          <MdEmail />
-          <span>info@example.com</span>
-        </div>
-
-        <div className="right">
-          <MdPhone />
-          <span>+012 345 6789</span>
+    <header className={`navbar-wrapper ${isScrolled ? "is-scrolled" : ""}`}>
+      {/* ── TOP BAR (Hidden on Mobile) ────────────────────────────────────── */}
+      <div className="navbar-top">
+        <div className="navbar-top__container">
+          <div className="navbar-top__left">
+            <Mail size={14} className="navbar-top__icon" />
+            <a href="mailto:hello@sareestyle.com">hello@sareestyle.com</a>
+          </div>
+          <div className="navbar-top__center">
+            <span className="navbar-top__line" />
+            <span className="navbar-top__dot" />
+            <div className="navbar-top__slider">
+              <AnimatePresence mode="wait">
+                <motion.p key={taglineIndex} initial={{ y: 15, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -15, opacity: 0 }} transition={{ duration: 0.5 }}>
+                  {taglines[taglineIndex]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+            <span className="navbar-top__dot" />
+            <span className="navbar-top__line" />
+          </div>
+          <div className="navbar-top__right">
+            <Phone size={14} className="navbar-top__icon" />
+            <a href="tel:+919876543210">+91 98765 43210</a>
+          </div>
         </div>
       </div>
 
-      {/* MAIN NAVBAR */}
-      <div className="navbar-container">
-
-        {/* LOGO */}
-        <div className="logo">
-          <h1>
-            CHE<span>FER</span>
-          </h1>
-        </div>
-
-        {/* NAV LINKS */}
-        <nav className="nav-links">
-          <Link href="/" className="active">
-            Home
+      {/* ── MAIN NAVBAR ─────────────────────────────────────────────────────── */}
+      <div className="navbar-main">
+        <div className="navbar-main__container">
+          {/* Brand Logo Box */}
+          <Link href="/" className="navbar-brand">
+            <div className="navbar-brand__logo-img">
+              <img src="/logo-emblem.png" alt="Logo" />
+            </div>
+            <div className="navbar-brand__text">
+              <h1 className="navbar-brand__title">SAREE</h1>
+              <div className="navbar-brand__divider"><span></span><span className="navbar-brand__subtitle">STYLE</span><span></span></div>
+              <p className="navbar-brand__tagline">Grace in Every Drape</p>
+            </div>
           </Link>
 
-          <Link href="/about">
-            About
-          </Link>
+          {/* Desktop Nav (Hidden on Mobile) */}
+          <nav className="navbar-nav desktop-only">
+            <ul className="navbar-nav__list">
+              <li className="navbar-nav__item"><Link href="/" className="navbar-nav__link">Home</Link></li>
+              <li className="navbar-nav__item"><Link href="/about" className="navbar-nav__link">About</Link></li>
+              <li className="navbar-nav__item has-mega">
+                <Link href="/collection" className="navbar-nav__link">Collection <ChevronRight size={14} style={{transform: 'rotate(90deg)'}} /></Link>
+                {/* Mega Menu logic here (reuse previous logic if needed, but keeping it clean for now) */}
+              </li>
+              <li className="navbar-nav__item"><Link href="/contact" className="navbar-nav__link">Contact</Link></li>
+            </ul>
+          </nav>
 
-          <Link href="/menu">
-            Menu
-          </Link>
-
-          <Link href="/chefs">
-            Chefs
-          </Link>
-
-          <Link href="/contact">
-            Contact
-          </Link>
-        </nav>
-
-        {/* ACTIONS */}
-        <div className="nav-actions">
-
-          <div className="social-icon">
-            <FaFacebookF />
+          {/* Icons & Hamburger */}
+          <div className="navbar-actions">
+            <button className="navbar-actions__btn desktop-only"><Search size={22} /></button>
+            <button className="navbar-actions__btn navbar-actions__btn--badge">
+              <ShoppingBag size={22} />
+              <span className="navbar-actions__count">0</span>
+            </button>
+            <button className="navbar-actions__btn navbar-actions__btn--badge desktop-only">
+              <Heart size={22} />
+              <span className="navbar-actions__count">0</span>
+            </button>
+            <button className="navbar-actions__btn desktop-only"><User size={22} /></button>
+            <button className="navbar-actions__btn mobile-hamburger" onClick={() => setIsMobileMenuOpen(true)}>
+              <Menu size={28} />
+            </button>
           </div>
-
-          <div className="social-icon">
-            <FaTwitter />
-          </div>
-
-          <div className="social-icon">
-            <FaLinkedinIn />
-          </div>
-
-          <button className="cta-btn">
-            Book Table
-          </button>
-
         </div>
       </div>
+
+      {/* ── MOBILE DRILL-DOWN DRAWER ────────────────────────────────────────── */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div className="mobile-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeMenu} />
+            <motion.div className="mobile-drawer" initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}>
+              
+              {/* HEADER (DYNAMIC) */}
+              <div className={`mobile-drawer__header ${currentView === 'main' ? 'is-black' : ''}`}>
+                {currentView !== 'main' && (
+                  <button className="mobile-drawer__back" onClick={popView}><ChevronLeft size={24} /></button>
+                )}
+                
+                {currentView === 'main' ? (
+                  <div className="mobile-drawer__brand">
+                    <img src="/logo-emblem.png" alt="Logo" className="mobile-drawer__logo" />
+                    <div className="mobile-drawer__brand-text">
+                      <span className="title">SAREE</span>
+                      <span className="subtitle">STYLE</span>
+                      <p>Grace in Every Drape</p>
+                    </div>
+                  </div>
+                ) : (
+                  <span className="mobile-drawer__title">{typeof currentView === 'string' ? currentView : currentView.title}</span>
+                )}
+                
+                <button className="mobile-drawer__close" onClick={closeMenu}><X size={24} /></button>
+              </div>
+
+              {/* CONTENT AREA */}
+              <div className="mobile-drawer__content">
+                <AnimatePresence mode="popLayout">
+                  {currentView === 'main' && (
+                    <motion.div key="main" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="mobile-view">
+                      <ul className="mobile-list">
+                        {mobileNavLinks.map((link) => (
+                          <li key={link.name}>
+                            <button className="mobile-list__item" onClick={() => link.hasDrillDown ? pushView('Collection') : null}>
+                              <div className="item-left">
+                                <span className="item-icon">{link.icon}</span>
+                                <span className="item-text">{link.name}</span>
+                              </div>
+                              {link.hasDrillDown && <ChevronRight size={18} className="item-arrow" />}
+                              {link.count !== undefined && <span className="item-badge">{link.count}</span>}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="mobile-drawer__promo">
+                        <div className="promo-box">
+                          <Gift className="promo-icon" />
+                          <div className="promo-text">
+                            <p>Get 10% OFF on your first order!</p>
+                            <span>Use Code: <strong>SAREESTYLE10</strong></span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {currentView === 'Collection' && (
+                    <motion.div key="collection" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }} className="mobile-view">
+                      <ul className="mobile-category-list">
+                        {Object.keys(megaMenuData).map((key) => (
+                          <li key={key}>
+                            <button className="category-card" onClick={() => pushView(megaMenuData[key])}>
+                              <div className="category-img"><img src={`https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80`} alt={key} /></div>
+                              <div className="category-info">
+                                <h3>{megaMenuData[key].title}</h3>
+                                <p>{megaMenuData[key].description}</p>
+                              </div>
+                              <ChevronRight size={18} />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+
+                  {/* Category View (e.g. Kurti) */}
+                  {typeof currentView === 'object' && currentView.sections && !currentView.links && (
+                    <motion.div key="category" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }} className="mobile-view">
+                      <ul className="mobile-sub-list">
+                        {currentView.sections.map((section: any) => (
+                          <li key={section.id}>
+                            <button className="mobile-list__item" onClick={() => pushView(section)}>
+                              <div className="item-left">
+                                <div className="item-circle-icon"><Layers size={18} /></div>
+                                <span className="item-text">{section.title}</span>
+                              </div>
+                              <ChevronRight size={18} className="item-arrow" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+
+                  {/* Section View (e.g. Kurti Categories) */}
+                  {typeof currentView === 'object' && currentView.links && (
+                    <motion.div key="section" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }} className="mobile-view">
+                      <ul className="mobile-drill-list">
+                        {currentView.links.map((link: string) => (
+                          <li key={link}>
+                            <Link href="#" className="mobile-drill-item" onClick={closeMenu}>
+                              {link} <ChevronRight size={16} />
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                      <Link href="#" className="view-all-mobile" onClick={closeMenu}>
+                        {currentView.viewAll} <ChevronRight size={14} />
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
-}
+};
+
+export default Navbar;
