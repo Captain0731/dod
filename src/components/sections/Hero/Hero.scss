@@ -346,38 +346,70 @@ $font-accent: var(--font-marcellus), 'Marcellus', serif;
 }
 
 .hero__features {
-  max-width: 1400px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: $sp-xl $sp-lg;
+  padding: 15px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: $sp-md;
+  gap: 4px;
 
   @media (max-width: 1200px) {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: $sp-xl;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
   }
 
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
   }
 }
 
 .hero__feature {
   display: flex;
   align-items: center;
-  gap: $sp-md;
+  gap: 10px;
   flex: 1;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  padding: 12px 14px;
+  border-radius: 14px;
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 
   &--highlight {
     .hero__feature-title {
       color: $brand-orange !important;
     }
+  }
+
+  // Hover glow
+  &--active {
+    background: rgba($brand-orange, 0.04);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba($brand-orange, 0.08);
+
+    .hero__feature-icon {
+      color: $brand-orange;
+      transform: scale(1.1) translateY(-2px);
+    }
+
+    .hero__feature-title {
+      color: $brand-orange;
+    }
+
+    .hero__feature-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  // Dim other cards
+  &--dimmed {
+    opacity: 0.35;
+    filter: saturate(0.5);
   }
 
   &:hover {
@@ -425,7 +457,7 @@ $font-accent: var(--font-marcellus), 'Marcellus', serif;
 
 .hero__feature-title {
   font-family: $font-accent;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: $brand-black;
   margin: 0;
@@ -434,9 +466,22 @@ $font-accent: var(--font-marcellus), 'Marcellus', serif;
 
 .hero__feature-desc {
   font-family: $font-body;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: rgba($brand-black, 0.6);
   margin: 0;
+}
+
+.hero__feature-arrow {
+  color: $brand-orange;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    opacity: 0.3;
+    transform: translateX(0);
+  }
 }
 
 // =============================================================================
@@ -510,5 +555,287 @@ $font-accent: var(--font-marcellus), 'Marcellus', serif;
     text-transform: uppercase;
     color: $brand-white;
     white-space: nowrap;
+  }
+}
+
+// =============================================================================
+// HERITAGE POPUP MODAL
+// =============================================================================
+$antique-gold: #C4A265;
+$charcoal: #2C2C2C;
+$ivory: #FAF7F2;
+$warm-cream: #F5F0E8;
+
+.hero-popup__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center; // Center by default
+  justify-content: center;
+  padding: 40px 20px;
+  background: rgba($charcoal, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow-y: auto; // Allow overlay to scroll if popup is too tall
+
+  @media (max-width: 768px) {
+    padding: 20px 10px;
+    align-items: flex-end; // Bottom sheet on mobile
+  }
+}
+
+.hero-popup {
+  position: relative;
+  max-width: 1000px;
+  width: 100%;
+  background: $brand-white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25);
+  margin: auto; // Works with flex center and overflow
+
+  @media (max-width: 768px) {
+    border-radius: 24px 24px 0 0;
+    margin: 0;
+  }
+}
+
+.hero-popup__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba($charcoal, 0.1);
+  background: rgba($brand-white, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: $charcoal;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: $charcoal;
+    color: $brand-white;
+    transform: rotate(90deg);
+  }
+}
+
+.hero-popup__container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  min-height: 500px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-popup__content {
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: $ivory;
+  position: relative;
+
+  @media (max-width: 900px) {
+    padding: 40px 30px;
+  }
+}
+
+.hero-popup__label {
+  display: inline-block;
+  font-family: $font-body;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: $antique-gold;
+  margin-bottom: 12px;
+}
+
+.hero-popup__gold-line {
+  width: 40px;
+  height: 2px;
+  background: $antique-gold;
+  margin-bottom: 25px;
+
+  &--bottom {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 60px;
+  }
+}
+
+.hero-popup__title {
+  font-family: $font-display;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 700;
+  color: $charcoal;
+  line-height: 1.15;
+  margin: 0 0 20px;
+}
+
+.hero-popup__body {
+  font-family: $font-body;
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba($charcoal, 0.7);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.hero-popup__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 35px;
+  background: $charcoal;
+  color: $brand-white;
+  border-radius: 50px;
+  font-family: $font-body;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+
+  &:hover {
+    background: $antique-gold;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba($antique-gold, 0.2);
+  }
+}
+
+.hero-popup__gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background: $warm-cream;
+}
+
+.hero-popup__main-img {
+  position: relative;
+  flex: 3;
+  min-height: 320px;
+  border-radius: 16px;
+  overflow: hidden;
+
+  &:hover {
+    .hero-popup__gallery-nav {
+      opacity: 1;
+    }
+  }
+}
+
+.hero-popup__img-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  img {
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  &:hover img {
+    transform: scale(1.05) !important;
+  }
+}
+
+.hero-popup__gallery-nav {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 15px;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    opacity: 1;
+  }
+}
+
+.hero-popup__nav-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba($brand-white, 0.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: $charcoal;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  pointer-events: auto;
+
+  &:hover {
+    background: $charcoal;
+    color: $brand-white;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.hero-popup__img-counter {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  padding: 4px 12px;
+  background: rgba($charcoal, 0.6);
+  backdrop-filter: blur(4px);
+  color: $brand-white;
+  border-radius: 20px;
+  font-family: $font-body;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  z-index: 5;
+}
+
+.hero-popup__thumbs {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  min-height: 120px;
+}
+
+.hero-popup__thumb {
+  position: relative;
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+
+  img {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  &:hover img {
+    transform: scale(1.08) !important;
+  }
+
+  &--active {
+    border-color: $antique-gold;
+    box-shadow: 0 0 15px rgba($antique-gold, 0.3);
   }
 }

@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { gsap } from "gsap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
-import { ArrowRight, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Play, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 // Import Swiper styles
 import "swiper/css";
@@ -62,17 +63,49 @@ const IconThread = () => (
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 interface FeatureItem {
+  id: number;
   icon: React.ReactNode;
   title: string;
   desc: string;
+  highlight?: boolean;
+  popupTitle: string;
+  popupSubtitle: string;
+  popupBody: string;
+  mainImage: string;
+  thumbImages: string[];
 }
 
-const features: (FeatureItem & { highlight?: boolean })[] = [
-  { icon: <IconLotus />, title: "Heritage Storytelling", desc: "Rooted in history, crafted for today." },
-  { icon: <IconHands />, title: "Handcrafted Luxury", desc: "Made by artisans, cherished for life." },
-  { icon: <IconArch />, title: "Museum Editorial Feel", desc: "Timeless pieces with a story to hold." },
-  { icon: <IconGem />, title: "Premium Ethnic Identity", desc: "Elegant. Authentic. Unapologetically ours." },
-  { icon: <IconThread />, title: "Emotional Connection", desc: "More than fashion, it's an inheritance." },
+const features: FeatureItem[] = [
+  {
+    id: 1, icon: <IconLotus />, title: "Heritage Storytelling", desc: "Rooted in history, crafted for today.",
+    popupTitle: "The Art of Heritage Storytelling", popupSubtitle: "Where Centuries Become Couture",
+    popupBody: "Every handcrafted piece carries generations of artistry, culture, and emotion. Designed not only to be worn, but remembered.",
+    mainImage: "/assets/heritage/heritage_storytelling.png", thumbImages: ["/assets/heritage/handcrafted_luxury.png", "/assets/heritage/heritage_storytelling.png"],
+  },
+  {
+    id: 2, icon: <IconHands />, title: "Handcrafted Luxury", desc: "Made by artisans, cherished for life.",
+    popupTitle: "The Essence of Handcrafted Luxury", popupSubtitle: "Where Every Stitch Tells a Story",
+    popupBody: "In a world of mass production, we choose the path of the artisan. Each piece passes through skilled hands that have honed their craft over decades.",
+    mainImage: "/assets/heritage/handcrafted_luxury.png", thumbImages: ["/assets/heritage/heritage_storytelling.png", "/assets/heritage/handcrafted_luxury.png"],
+  },
+  {
+    id: 3, icon: <IconArch />, title: "Museum Editorial Feel", desc: "Timeless pieces with a story to hold.",
+    popupTitle: "A Museum of Living Fashion", popupSubtitle: "Curated, Not Created",
+    popupBody: "Our collections are curated with the same reverence as a museum exhibition. Each garment is a testament to the intersection of art and fashion.",
+    mainImage: "/assets/heritage/heritage_storytelling.png", thumbImages: ["/assets/heritage/handcrafted_luxury.png", "/assets/heritage/heritage_storytelling.png"],
+  },
+  {
+    id: 4, icon: <IconGem />, title: "Premium Ethnic Identity", desc: "Elegant. Authentic. Unapologetically ours.",
+    popupTitle: "Defining Premium Ethnic Identity", popupSubtitle: "Unapologetically Rooted, Effortlessly Global",
+    popupBody: "Our designs celebrate the richness of Indian heritage without compromise. We merge the boldness of ethnic identity with the sophistication of modern luxury.",
+    mainImage: "/assets/heritage/handcrafted_luxury.png", thumbImages: ["/assets/heritage/heritage_storytelling.png", "/assets/heritage/handcrafted_luxury.png"],
+  },
+  {
+    id: 5, icon: <IconThread />, title: "Emotional Connection", desc: "More than fashion, it's an inheritance.",
+    popupTitle: "The Power of Emotional Connection", popupSubtitle: "Woven with Love, Worn with Pride",
+    popupBody: "Fashion fades, but emotion endures. We create garments that become part of your family's story — pieces that carry the warmth of generations.",
+    mainImage: "/assets/heritage/heritage_storytelling.png", thumbImages: ["/assets/heritage/handcrafted_luxury.png", "/assets/heritage/heritage_storytelling.png"],
+  },
 ];
 
 // ── Slides Data ──────────────────────────────────────────────────────────────
@@ -120,10 +153,57 @@ const contentVariants: Variants = {
   })
 };
 
+// ── Popup Animation Variants ─────────────────────────────────────────────────
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] as any } },
+  exit: { opacity: 0, transition: { duration: 0.3, ease: "easeInOut" as const } },
+};
+const popupVariants = {
+  hidden: { opacity: 0, y: 60, scale: 0.96 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as any } },
+  exit: { opacity: 0, y: 40, scale: 0.97, transition: { duration: 0.35, ease: "easeInOut" as const } },
+};
+const textSlideVariants = {
+  hidden: { opacity: 0, x: -40 },
+  visible: (i: number) => ({ opacity: 1, x: 0, transition: { delay: 0.15 + i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] as any } }),
+};
+const imageRevealVariants = {
+  hidden: { opacity: 0, scale: 1.08 },
+  visible: (i: number) => ({ opacity: 1, scale: 1, transition: { delay: 0.3 + i * 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] as any } }),
+};
+
 const Hero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const floatRef1 = useRef<HTMLDivElement>(null);
   const floatRef2 = useRef<HTMLDivElement>(null);
+
+  // ── Popup State ──
+  const [activePopup, setActivePopup] = useState<FeatureItem | null>(null);
+  const [hoveredFeatureId, setHoveredFeatureId] = useState<number | null>(null);
+  const [activeGalleryIdx, setActiveGalleryIdx] = useState(0);
+
+  const openPopup = useCallback((card: FeatureItem) => {
+    setActivePopup(card);
+    setActiveGalleryIdx(0); // Reset gallery index when opening
+    // Removed body scroll lock per request "back side scroll work"
+  }, []);
+
+  const closePopup = useCallback(() => {
+    setActivePopup(null);
+  }, []);
+
+  const allGalleryImages = activePopup ? [activePopup.mainImage, ...activePopup.thumbImages] : [];
+
+  const handleNextImg = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveGalleryIdx((prev) => (prev + 1) % allGalleryImages.length);
+  };
+
+  const handlePrevImg = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveGalleryIdx((prev) => (prev - 1 + allGalleryImages.length) % allGalleryImages.length);
+  };
 
   // ── GSAP Floating Animations ──
   useEffect(() => {
@@ -307,7 +387,7 @@ const Hero: React.FC = () => {
       </Swiper>
 
       {/* ════════════════════════════════════════════════════════════════════ */}
-      {/* FEATURE STRIP (Restored)                                            */}
+      {/* FEATURE STRIP — Interactive Heritage Cards                          */}
       {/* ════════════════════════════════════════════════════════════════════ */}
       <div className="hero__features-container">
         <motion.div
@@ -319,18 +399,98 @@ const Hero: React.FC = () => {
         >
           {features.map((f, i) => (
             <React.Fragment key={f.title}>
-              <div className={`hero__feature ${f.highlight ? "hero__feature--highlight" : ""}`}>
+              <div
+                className={`hero__feature ${f.highlight ? "hero__feature--highlight" : ""} ${hoveredFeatureId !== null && hoveredFeatureId !== f.id ? "hero__feature--dimmed" : ""} ${hoveredFeatureId === f.id ? "hero__feature--active" : ""}`}
+                onMouseEnter={() => setHoveredFeatureId(f.id)}
+                onMouseLeave={() => setHoveredFeatureId(null)}
+                onClick={() => openPopup(f)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && openPopup(f)}
+              >
                 <span className="hero__feature-icon">{f.icon}</span>
                 <div className="hero__feature-content">
                   <h3 className="hero__feature-title">{f.title}</h3>
                   <p className="hero__feature-desc">{f.desc}</p>
                 </div>
+                <span className="hero__feature-arrow"><ArrowRight size={14} /></span>
               </div>
               {i < features.length - 1 && <div className="hero__feature-divider" />}
             </React.Fragment>
           ))}
         </motion.div>
       </div>
+
+      {/* ════════════════════════════════════════════════════════════════════ */}
+      {/* HERITAGE POPUP MODAL                                                */}
+      {/* ════════════════════════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {activePopup && (
+          <motion.div className="hero-popup__overlay" variants={overlayVariants} initial="hidden" animate="visible" exit="exit" onClick={closePopup}>
+            <motion.div className="hero-popup" variants={popupVariants} initial="hidden" animate="visible" exit="exit" onClick={(e) => e.stopPropagation()}>
+              <button className="hero-popup__close" onClick={closePopup} aria-label="Close popup"><X size={22} /></button>
+              <div className="hero-popup__container">
+                {/* LEFT: Editorial Content */}
+                <div className="hero-popup__content">
+                  <motion.span className="hero-popup__label" variants={textSlideVariants} custom={0} initial="hidden" animate="visible">{activePopup.popupSubtitle}</motion.span>
+                  <motion.div className="hero-popup__gold-line" variants={textSlideVariants} custom={1} initial="hidden" animate="visible" />
+                  <motion.h2 className="hero-popup__title" variants={textSlideVariants} custom={2} initial="hidden" animate="visible">{activePopup.popupTitle}</motion.h2>
+                  <motion.p className="hero-popup__body" variants={textSlideVariants} custom={3} initial="hidden" animate="visible">{activePopup.popupBody}</motion.p>
+                </div>
+                {/* RIGHT: Editorial Gallery with Navigation */}
+                <div className="hero-popup__gallery">
+                  <motion.div className="hero-popup__main-img" variants={imageRevealVariants} custom={0} initial="hidden" animate="visible">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeGalleryIdx}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.4 }}
+                        className="hero-popup__img-slide"
+                      >
+                        <Image
+                          src={allGalleryImages[activeGalleryIdx]}
+                          alt={activePopup.popupTitle}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          style={{ objectFit: 'cover' }}
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Gallery Nav Buttons */}
+                    <div className="hero-popup__gallery-nav">
+                      <button className="hero-popup__nav-btn" onClick={handlePrevImg}><ChevronLeft size={20} /></button>
+                      <button className="hero-popup__nav-btn" onClick={handleNextImg}><ChevronRight size={20} /></button>
+                    </div>
+
+                    <div className="hero-popup__img-counter">
+                      {activeGalleryIdx + 1} / {allGalleryImages.length}
+                    </div>
+                  </motion.div>
+
+                  <div className="hero-popup__thumbs">
+                    {allGalleryImages.map((img, idx) => (
+                      <motion.div
+                        key={idx}
+                        className={`hero-popup__thumb ${activeGalleryIdx === idx ? "hero-popup__thumb--active" : ""}`}
+                        variants={imageRevealVariants}
+                        custom={idx + 1}
+                        initial="hidden"
+                        animate="visible"
+                        onClick={() => setActiveGalleryIdx(idx)}
+                      >
+                        <Image src={img} alt={`${activePopup.title} detail ${idx + 1}`} fill sizes="(max-width: 768px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ════════════════════════════════════════════════════════════════════ */}
       {/* QUOTE BAND (Restored)                                               */}
